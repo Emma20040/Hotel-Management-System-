@@ -1,0 +1,47 @@
+# --- Python and Django Core ---
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django sensitive and local settings
+.env
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Django specific logs
+*.log
+
+# --- Virtual Environments ---
+
+venv/
+env/
+.venv/
+ENV/
+bin/
+include/
+lib/
+lib64/
+share/
+pip-selfcheck.json
+
+# --- Static and Media Files ---
+# Ignore collected static files 
+staticfiles/
+static-cdn/
+
+# Ignore user-uploaded media
+media/
+
+# --- IDE and Editor Specific ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Testing and Coverage ---
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
