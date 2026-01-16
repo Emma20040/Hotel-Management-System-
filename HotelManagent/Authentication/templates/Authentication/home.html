@@ -3,4 +3,12 @@
 {% block content %}
 
  Hello, {{user.email|default:"Guest"}}
+ <p>
+    <a href="{% url 'login-user' %}">Login</a>
+
+ </p>
+
+ <p>
+    <a href="{% url 'logout-user' %}">Logout</a>
+ </p>
 {% endblock content %}
