@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.contrib.auth import login, logout
 from rest_framework.authtoken.models import Token
 
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from api.serializers.authentication import UserSerializer, RegisterUserSerializer, LoginSerializer
 from Authentication.models import CustomUser
 
 # Home
@@ -26,7 +26,7 @@ def api_home(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
-    serializer = RegisterSerializer(data=request.data)
+    serializer = RegisterUserSerializer(data=request.data)
     
     if serializer.is_valid():
         user = serializer.save()
