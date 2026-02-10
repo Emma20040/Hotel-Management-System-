@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout,authenticate
 from rest_framework.authtoken.models import Token
 
 from api.serializers.authentication import UserSerializer, RegisterUserSerializer, LoginSerializer
@@ -51,11 +51,10 @@ def login_view(request):
         email = serializer.validated_data['email']
         password = serializer.validated_data['password']
         
-        from django.contrib.auth import authenticate
         user = authenticate(request, email=email, password=password)
         
         if user:
-            login(request, user)
+            # REMOVED: login(request, user)  # ← This causes CSRF issue
             token, created = Token.objects.get_or_create(user=user)
             
             return Response({
@@ -68,6 +67,7 @@ def login_view(request):
         {'error': 'Invalid credentials'}, 
         status=status.HTTP_400_BAD_REQUEST
     )
+
 
 # Logout
 @api_view(['POST'])
@@ -86,23 +86,45 @@ def profile(request):
 # Get Token
 @api_view(['POST'])
 @permission_classes([AllowAny])
+# api/views.py
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def get_token(request):
-    from django.contrib.auth import authenticate
-    from rest_framework.authtoken.views import ObtainAuthToken
-    
     email = request.data.get('email')
     password = request.data.get('password')
     
-    user = authenticate(request, email=email, password=password)
+    if not email or not password:
+        return Response({
+            'error': 'Please provide both email and password'
+        }, status=status.HTTP_400_BAD_REQUEST)
     
-    if user:
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+    try:
+        # Get user by email directly
+        from Authentication.models import CustomUser
+        user = CustomUser.objects.get(email=email)
+        
+        # Check password
+        if user.check_password(password):
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'token': token.key,
+                'user_id': user.id,
+                'email': user.email
+            })
+        else:
+            return Response({
+                'error': 'Invalid password'
+            }, status=status.HTTP_401_UNAUTHORIZED)
+            
+    except CustomUser.DoesNotExist:
+        return Response({
+            'error': 'User not found'
+        }, status=status.HTTP_401_UNAUTHORIZED)
     
-    return Response(
-        {'error': 'Invalid credentials'}, 
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # List Users (Admin only)
 @api_view(['GET'])
