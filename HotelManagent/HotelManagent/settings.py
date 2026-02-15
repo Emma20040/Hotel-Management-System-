@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'Authentication',
-    'api'
+    'api',
+    'booking'
 ]
 
 # custome user model
