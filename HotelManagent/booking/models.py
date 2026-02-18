@@ -31,7 +31,7 @@ class Room(models.Model):
     
     room_id = models.AutoField(primary_key=True)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='rooms')
-    room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name='rooms')
+    room_type = models.ForeignKey(RoomType, on_delete=models.SET_NULL, related_name='rooms', null=True)
     room_number = models.CharField(max_length=10, unique=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available')
     floor = models.IntegerField(null=True, blank=True)
@@ -48,7 +48,6 @@ class Guest(models.Model):
     address = models.CharField(max_length=200, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(unique=True)
-    id_proof_type = models.CharField(max_length=50, blank=True)
     id_proof_number = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
