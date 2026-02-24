@@ -20,8 +20,8 @@ urlpatterns = [
     path('auth/get-token/', authentication.get_token, name='api-get-token'),
 
     # Hotel
-    path('hotel/create', hotel.create_hotel, name ='create-hotel'),
-    path('hotel/get', hotel.hotel_details, name= 'get-hotel'),
-    path('hotel/update', hotel.update_hotel, name='update-hotel'),
-    path('hotel/delete', hotel.delete_hotel, name='delete-hotel')
+    path('hotel/create/', hotel.create_hotel, name='api-create-hotel'),
+    path('hotel/get/', hotel.hotel_details, name='api-get-hotel'),
+    path('hotel/update/', hotel.update_hotel, name='api-update-hotel'),
+    path('hotel/delete/', hotel.delete_hotel, name='api-delete-hotel'),
 ]
